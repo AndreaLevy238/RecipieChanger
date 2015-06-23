@@ -62,10 +62,10 @@ public class Ingredient {
                 newAmount = amount * 1000;
                 break;
             }
-            case "g":case "gram":
+            default:
             {
-                newAmount = amount;
-                break;
+                System.out.println("You did not enter a measure of volume");
+                newAmount = -1.0;
             }
         }
         return new Ingredient(newAmount, "mL", item);
