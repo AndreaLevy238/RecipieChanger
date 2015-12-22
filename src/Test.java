@@ -44,10 +44,10 @@ public class Test {
         return ingredientFound.equals(ingredient);
 
     }
-    public static boolean testMultiplyAllAmounts(Recipe recipe, double multiplier)
+    public static boolean testMultiplyAllAmounts(Recipe initial, double multiplier, Recipe comparison)
     {
-        Recipe result = recipe.multiplyAllAmounts(multiplier);
-        
+        Recipe result = initial.multiplyAllAmounts(multiplier);
+        return result.equals(comparison);
     }
 
     // Test Case for Equals
@@ -77,6 +77,7 @@ public class Test {
     }
     public static void main(String[] args)
     {
+        long start = System.currentTimeMillis();
 
         ConversionFactor cupToPint = new ConversionFactor("cup", "pint", 0.50721);
         ConversionFactor pintToCup = new ConversionFactor("pint", "cup", 1.97157);
@@ -89,30 +90,7 @@ public class Test {
         Ingredient beer = new Ingredient(1.0, "pt", "beer");
         Ingredient buttermilk = new Ingredient(0.25, "qt","buttermilk");
         Ingredient coffee = new Ingredient(16.0, "ounce", "coffee");
-        List<Ingredient> ingredientList = new LinkedList<>();
-        ingredientList.add(milk);
-        ingredientList.add(wine);
-        ingredientList.add(dietCoke);
-        ingredientList.add(bakingSoda);
-        ingredientList.add(vanilla);
-        ingredientList.add(beer);
-        ingredientList.add(buttermilk);
-        ingredientList.add(coffee);
-        Recipe junk = new Recipe(ingredientList, "junk");
 
-        List<Ingredient> doubledIngredientList = new LinkedList<>();
-        doubledIngredientList.add(new Ingredient(4.0, "cup", "milk"));
-        doubledIngredientList.add(new Ingredient(1500.0, "ml","wine"));
-        doubledIngredientList.add(new Ingredient(1.0, "liter", "diet coke"));
-        doubledIngredientList.add(new Ingredient(3.0, "tsp", "baking soda"));
-        doubledIngredientList.add(new Ingredient(2.0, "tbsp", "vanilla"));
-        doubledIngredientList.add(new Ingredient(2.0, "pint", "beer"));
-        doubledIngredientList.add(new Ingredient(0.5, "quart", "buttermilk"));
-        doubledIngredientList.add(new Ingredient(32.0, "ounce", "coffee"));
-        Recipe junkdoubled = new Recipe(doubledIngredientList,"junk doubled");
-
-
-        long start = System.currentTimeMillis();
         //Test Cases For Conversion Factor
         // Test Case 1
         testCase(testRightUnitCorrect(cupToPint));
@@ -150,6 +128,25 @@ public class Test {
         // Test Case 17
         testCase(testEquals(wine, pinotNoir));
 
+        List<Ingredient> ingredientList = new LinkedList<>();
+        ingredientList.add(milk);
+        ingredientList.add(wine);
+        ingredientList.add(dietCoke);
+        ingredientList.add(bakingSoda);
+        ingredientList.add(vanilla);
+        ingredientList.add(beer);
+        ingredientList.add(buttermilk);
+        ingredientList.add(coffee);
+        Recipe junk = new Recipe(ingredientList, "junk");
+
+        List<Ingredient> doubledIngredientList = new LinkedList<>();
+        for (Ingredient ingredient : ingredientList)
+        {
+            doubledIngredientList.add(new Ingredient(ingredient.getAmount()* 2,
+                    ingredient.getUnit(), ingredient.getItem()));
+        }
+        Recipe junkdoubled = new Recipe(doubledIngredientList, "junk");
+
         //Testing Recipe class
         // Test Case 18
         testCase(testFindIngredient(milk,junk));
@@ -171,6 +168,9 @@ public class Test {
         testCase(testEquals(junk,junk));
         // Test Case 27
         testCase(testNotEquals(junk,junkdoubled));
+        // Test Case 28
+        testCase(testMultiplyAllAmounts(junk, 2.0, junkdoubled));
+
 
 
 
