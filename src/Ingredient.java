@@ -24,50 +24,48 @@ public class Ingredient {
         return item;
     }
 
-    public Ingredient convertToMilliliters() {
-        String unitName = unit.toLowerCase();
-        double newAmount = 0;
-        switch (unitName) {
-            case "cup": {
-                newAmount = 236.588 * amount;
-                break;
-            }
-            case "tsp":case "teaspoon":{
-                newAmount = 4.92892 * amount;
-                break;
-            }
-            case "tbsp":case "tablespoon": {
-                newAmount = 14.7868 * amount;
-                break;
-            }
-            case "oz": case "ounces":{
-                newAmount = 29.5735 * amount;
-                break;
-            }
-            case "quart": {
-                newAmount = 946.353 * amount;
-                break;
-            }
-            case "gallon": {
-                newAmount = 3785.41 * amount;
-                break;
-            }
-            case "ml":case "milliliter":
-            {
-                newAmount = amount;
-                break;
-            }
-            case "l":case"liter":
-            {
-                newAmount = amount * 1000;
-                break;
-            }
-            default:
-            {
-                System.out.println("You did not enter a measure of volume");
-                newAmount = -1.0;
-            }
+    public void convertIngredient(ConversionFactor conversionFactor)
+    {
+        if (conversionFactor.rightUnit(unit))
+        {
+            amount = amount * conversionFactor.getMultiplier();
+            unit = conversionFactor.getTo();
         }
-        return new Ingredient(newAmount, "mL", item);
     }
+    public void standardizeUnit()
+    {
+        //this standardizes ways of writing units in terms of volume
+        unit = unit.toLowerCase();
+        switch(unit)
+        {
+            case("milliliter"):
+                unit = "ml";
+                break;
+            case("l"):
+                unit = "liter";
+                break;
+            case("tablespoon"):
+                unit = "tbsp";
+                break;
+            case("teaspoon"):
+                unit = "tsp";
+                break;
+            case("pt"):
+                unit = "pint";
+                break;
+            case ("qt"):
+                unit = "quart";
+                break;
+            case("ounce"):
+                unit = "oz";
+                break;
+        }
+
+    }
+
+    public boolean equals(Object obj)
+    {
+        return obj instanceof Ingredient && ((Ingredient) obj).getItem().equals(item) && ((Ingredient) obj).getUnit().equals(unit)&& ((Ingredient) obj).getAmount()== amount;
+    }
+
 }

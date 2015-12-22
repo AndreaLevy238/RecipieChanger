@@ -35,6 +35,23 @@ public class Main
         }
         return ingredients;
     }
+    public static List<ConversionFactor> createConversionFactorsFromFile(Scanner in)
+    {
+        List<ConversionFactor> factors = new LinkedList<>();
+        while (in.hasNext())
+        {
+            String[] line = in.nextLine().split(",");
+            try
+            {
+                factors.add(new ConversionFactor(line[0], line[1], Double.parseDouble(line[2])));
+            }
+            catch(IndexOutOfBoundsException e)
+            {
+                System.out.print("Conversion factor is not complete");
+            }
+        }
+        return factors;
+    }
 
     public static Recipe caseA(Scanner in, Recipe recipe)
     {
@@ -43,30 +60,48 @@ public class Main
         double numberAnswer = Double.valueOf(rawAnswer);
         return recipe.multiplyAllAmounts(numberAnswer);
     }
+
+    public static ConversionFactor linearSearchToUnit(List<ConversionFactor> cf, String to)
+    {
+        for (ConversionFactor f: cf)
+        {
+            if (f.getTo().equals(to))
+            {
+                return f;
+            }
+        }
+        throw new Error("Unit not found");
+    }
     public static void caseB(Scanner in, Recipe recipe)
     {
-        System.out.println("Choose an ingredient from the above recipe that you want to convert.");
-        String answer = in.next();
-        System.out.println(answer);
-        for (Ingredient i: recipe.getIngredients())
-            if (i.getItem().contains(answer)) {
-                i.convertToMilliliters();
-                double mL = i.getAmount();
-                System.out.println(Double.toString(mL) + "mL of " + i.getItem());
-            }
+        try {
+
+            System.out.print("What ingredient do you want to convert the units of?");
+            String ingredientName = in.next();
+            Ingredient ingredient = recipe.findIngredient(ingredientName);
+            String unitFileName = ingredient.getUnit() + ".csv";
+            List<ConversionFactor> conversionFactors = createConversionFactorsFromFile(new Scanner(new File(unitFileName)));
+            System.out.print("To what unit do you want to convert your ingredient?");
+            String unitName = in.next();
+            ingredient.convertIngredient(linearSearchToUnit(conversionFactors, unitName));
+            recipe.print();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.print(e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
 	// write your code here
-    String filename = "meringue";
         try
         {
-            Scanner in = new Scanner(new File(filename));
+            Scanner in = new Scanner(new File(args[0]));
             Scanner userIn = new Scanner(System.in);
             List<Ingredient> ingredients = createIngredientsFromFile(in);
-            Recipe myRecipe = new Recipe(ingredients, filename);
+            Recipe myRecipe = new Recipe(ingredients, args[0]);
             System.out.print("What do you want to do with your recipe?" +
-                    "\na)\tchange the amount made \nb)\tconvert an amount to milliliters\n");
+                    "\na)\tchange the amount made \nb)\tconvert units of an ingredient\n");
             String answer1 = userIn.next().toLowerCase();
             switch(answer1)
             {
@@ -78,9 +113,10 @@ public class Main
                 }
                 case "b":
                 {
+                    myRecipe.standardizeUnits();
                     myRecipe.print();
                     caseB(userIn,myRecipe);
-                }
+               }
             }
         }
         catch (FileNotFoundException e)

@@ -1,0 +1,10 @@
+From,To,Multiplier
+liter,ml,1000
+liter,liter,1
+liter,tsp,202.884
+liter,tbsp,67.628
+liter,cup,4.16667
+liter,pint,2.11338
+liter,quart ,1.05669
+liter,gallon,0.264172
+liter,oz,33.814

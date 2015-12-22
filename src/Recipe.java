@@ -17,10 +17,50 @@ public class Recipe {
         }
         return new Recipe(newIngredientList, name);
     }
-
+    public String getName()
+    {
+        return name;
+    }
     public List<Ingredient> getIngredients()
     {
         return ingredients;
+    }
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof Recipe))
+        {
+            return false;
+        }
+        if (!(((Recipe) obj).getName().equals(name)))
+        {
+            return false;
+        }
+        for (int i = 0; i < ingredients.size(); i++)
+        {
+            if (!(ingredients.get(i).equals(((Recipe) obj).getIngredients().get(i))))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public Ingredient findIngredient(String item)
+    {
+        for (Ingredient i: ingredients)
+        {
+            if (i.getItem().equals(item))
+            {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    public void standardizeUnits()
+    {
+        ingredients.forEach(Ingredient::standardizeUnit);
     }
 
     public void print()
@@ -32,5 +72,6 @@ public class Recipe {
             System.out.print(amount + i.getUnit() + " " + i.getItem()+"\n");
         }
     }
+
 
 }

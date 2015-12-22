@@ -1,0 +1,11 @@
+From,To,Multiplier
+ml,ml,1
+ml,liter,0.001
+ml,tsp,0.202884
+ml,tbsp,0.067628
+ml,cup,0.00416667
+ml,pint,0.00211338
+ml,quart ,0.00105669
+ml,gallon,0.000264172
+ml,oz,0.0351951
+
